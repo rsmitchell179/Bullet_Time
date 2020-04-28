@@ -3,19 +3,39 @@ class Play extends Phaser.Scene {
         super("playScene");
     }
 
-    preload() {
-        //this.load.spritesheet('player','./assets/sprites/player.png', {frameWidth: 51, frameHeight:50, statFrame: 0, endFrame: 9});
-    }
-
     create() {
         // Variables and settings 
-        this.MAX_VELOCITY = 300;
-        this.physics.world.gravity.y = 1000;
+        this.MAX_VELOCITY = 700;
+        this.physics.world.gravity.y = 2000;
 
+        this.bulletSpeed = -450;
+
+        // set bg color
+        this.cameras.main.setBackgroundColor("#CCC");
+        
+        // create ground tiles
+        this.ground = this.add.group();
+        for(let i = 0; i < game.config.width; i += tileSize) {
+            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize, 'sidewalk').setOrigin(0);
+            groundTile.body.immovable = true;
+            groundTile.body.allowGravity = false;
+            this.ground.add(groundTile);
+        }
         //temp sprite to see gameplay until we get the atlas to work
         //this.player = this.physics.add.sprite(centerX, centerY, 'player');
-        this.player = this.physics.add.sprite(centerX, centerY, 'player_atlas', 'Run1').setScale(SCALE);
+        this.player = this.physics.add.sprite(centerX/3, centerY, 'player_atlas', 'Run1');
+        this.player.body.setSize(44, 100);
         this.player.setCollideWorldBounds(true);
+        this.player.destroyed = false;
+
+        this.bulletGroup = this.add.group({
+            runChildUpdate: true
+        });
+        this.addBullet();
+
+        // this.bullet = this.physics.add.sprite(game.config.width, bulletMaxHeight, 'bullet');
+        // this.bullet.body.immovable = true;
+        // this.bullet.body.setAllowGravity(false).setVelocityX(-250);
 
         // this.anims.create({
         //     key: 'run',
@@ -37,14 +57,26 @@ class Play extends Phaser.Scene {
         });
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
+
+        // add physics collider
+        this.physics.add.collider(this.player, this.ground);
+        this.physics.add.collider(this.player, this.bullet);
+    }
+
+    addBullet() {
+        let bullet = new Bullet(this, this.bulletSpeed);
+        this.bulletGroup.add(bullet);
     }
 
     update() {
         //this is a broken animation for now. DO NOT UNCOMMENT UNTIL FIXED
         //this.player.anims.play('Run', true);
-        if(Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        if(this.player.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.player.setVelocityY(-this.MAX_VELOCITY);
         }
+
+        //temp bullet wrap
+        //this.physics.world.wrap(this.bullet, this.bullet.width/2);
     }
 
 }

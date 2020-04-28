@@ -3,19 +3,6 @@ class Menu extends Phaser.Scene {
         super("menuScene");
     }
 
-    preload() {
-        // Load Player Atlas
-        this.load.path = "./assets/sprites/";
-        this.load.atlas('player_atlas', 'player.png', 'player.json');
-        // Load Audio
-        this.load.path = "./assets/audio/"
-        this.load.audio('bullet_sound', 'Bullet_Shot.wav');
-        this.load.audio('jump_sound', 'Jump.wav');
-        this.load.audio('menu_select_sound', 'Menu_Select.wav');
-        this.load.audio('powerup_sound', 'Powerup.wav');
-        this.load.audio('score_sound', 'Scored.wav');
-    }
-
     create() {
         //this.scene.start("playScene");
         // Menu display 
