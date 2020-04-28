@@ -28,7 +28,9 @@ let config = {
 // Define Game 
 let game = new Phaser.Game(config);
 
-// Define Variables 
+// Define Variables
+let cursors;
+const SCALE = 0.5;
 let centerX = game.config.width/2;
 let centerY = game.config.height/2; 
 let textSpace = 64;

@@ -4,6 +4,9 @@ class Menu extends Phaser.Scene {
     }
 
     preload() {
+        // Load Player Atlas
+        this.load.path = "./assets/sprites/";
+        this.load.atlas('player_atlas', 'player.png', 'player.json');
         // Load Audio
         this.load.path = "./assets/audio/"
         this.load.audio('bullet_sound', 'Bullet_Shot.wav');
@@ -14,6 +17,7 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
+        //this.scene.start("playScene");
         // Menu display 
         let menuConfig = {
             fontFamily: 'Courier',
@@ -27,12 +31,17 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
         // Add Matrix Runner Title to top of menu 
-        this.add.text(centerX, centerY - textSpace*3, 'Matrix Runner', menuConfig).setOrigin(0.5);
+        this.add.text(centerX, centerY - textSpace*3, 'Matrix Runner', menuConfig).setOrigin(SCALE);
         
+        
+        keyLEFT =  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     }
 
     update() {
-        
+        if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.sound.play('menu_select_sound');
+            this.scene.start('playScene');
+        }
     }
 
 }
