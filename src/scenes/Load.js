@@ -7,9 +7,11 @@ class Load extends Phaser.Scene {
         // Load Player Atlas
         this.load.path = "./assets/sprites/";
         this.load.atlas('player_atlas', 'player.png', 'player.json');
+        this.load.image('menuBackground', 'matrix.jpg')
         this.load.image('bullet', 'bullet.png');
         this.load.image('building1', 'building.png');
         this.load.image('building2', 'building1.png');
+        this.load.image('sunglasses', 'sunglasses.png');
         // Load Audio
         this.load.path = "./assets/audio/";
         this.load.audio('bullet_sound', 'Bullet_Shot.wav');
