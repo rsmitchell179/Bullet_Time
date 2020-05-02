@@ -4,7 +4,13 @@
 // Ryan Mitchell
 // Game Title: Matrix Runner 
 // Date Completed 5/3/20
-// Creative tilt justifications: 
+// Creative tilt justifications: We are proud of how we implemented the powerup logics. We used a combination of collisions, booleans
+//                               and variables to implement them. For example the invincibility detects if they have the the powerup
+//                               then destroys any bullets that they run into while also tracking how long they have left with that powerup
+//                               (Josh: "This took me so long to realize I could use overlap instead of collision").
+//                               We are also proud of our art assets. All of the sprites were made by the team. Ryan is proud of how the
+//                               player sprite turned out (Ryan: "I suck at art but it turned out great :)") and Naisha is proud of how the 
+//                               background looks. 
 
 let config = {
     type: Phaser.AUTO,
@@ -38,11 +44,10 @@ let bulletMaxHeight = 325;
 let centerX = game.config.width/2;
 let centerY = game.config.height/2; 
 let textSpace = 64;
-let keyLEFT;
+let keyS;
 let keyF;
 let keyM;
 let player = null;
 let level;
 let highScore;
 let newHighScore = false;
-

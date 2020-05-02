@@ -1,6 +1,6 @@
-class SunGlasses extends Phaser.Physics.Arcade.Sprite{
+class StopWatch extends Phaser.Physics.Arcade.Sprite{
     constructor(scene, velocity){
-        super(scene, game.config.width, Phaser.Math.Between(190, 250), 'sunglasses').setOrigin(0,0);
+        super(scene, game.config.width, Phaser.Math.Between(190, 250), 'stopwatch').setOrigin(0,0);
         scene.add.existing(this);
         scene.physics.add.existing(this);       // add physics body
         this.setVelocityX(velocity);            // make it go!
@@ -15,7 +15,7 @@ class SunGlasses extends Phaser.Physics.Arcade.Sprite{
     update(){
         super.update();
 
-        // destroy SunGlasses if it reaches the left edge of the screen
+        // destroy StopWatch if it reaches the left edge of the screen
         if(this.x < -this.width) {
             this.destroy();
         }

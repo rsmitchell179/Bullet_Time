@@ -1,10 +1,10 @@
 class Bullet extends Phaser.Physics.Arcade.Sprite{
     constructor(scene, velocity){
-        super(scene, game.config.width + 50, Phaser.Math.Between(150, 200), 'bullet');
+        super(scene, game.config.width + 50, Phaser.Math.Between(190, 270), 'bullet');
         scene.add.existing(this);
         scene.physics.add.existing(this);       // add physics body
         this.setVelocityX(velocity);            // make it go!
-        this.setImmovable();
+        this.setImmovable(true);
         this.setFriction(0);                   
         this.body.onCollide = true;
         this.newBullet = true;                 // custom property to control bullet spawning
