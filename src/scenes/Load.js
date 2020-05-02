@@ -4,9 +4,10 @@ class Load extends Phaser.Scene {
     }
 
     preload() {
-        // Load Player Atlas
+        // Load player atlas
         this.load.path = "./assets/sprites/";
         this.load.atlas('player_atlas', 'player.png', 'player.json');
+        // Load other assets 
         this.load.image('menuBackground', 'menubackground.png');
         this.load.image('citybackground4', 'background4.png');
         this.load.image('starsandsun', 'sunandstars.png');
@@ -14,6 +15,7 @@ class Load extends Phaser.Scene {
         this.load.image('farbuildings', 'lightGreyBuildings.png');
         this.load.image('clouds', 'clouds.png');
         this.load.image('bullet', 'bullet.png');
+        this.load.image('bulletIcon', 'bulleticon.png');
         this.load.image('building1', 'building.png');
         this.load.image('building2', 'building1.png');
         this.load.image('sunglasses', 'sunglasses.png');
@@ -27,6 +29,9 @@ class Load extends Phaser.Scene {
         this.load.audio('jump_sound', 'Jump.wav');
         this.load.audio('menu_select_sound', 'Menu_Select.wav');
         this.load.audio('powerup_sound', 'Powerup.wav');
+        // Load font 
+        this.load.path = "./assets/font/";
+        this.load.bitmapFont('myFont', 'font.png', 'font.fnt');
     }
 
     create() {

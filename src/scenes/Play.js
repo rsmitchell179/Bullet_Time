@@ -17,9 +17,6 @@ class Play extends Phaser.Scene {
         this.timeSlow = false;
         this.jumps = 0;
 
-        
-       
-
         // set background
         this.starsandsun = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'starsandsun').setOrigin(0);
         this.farbuildings = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'farbuildings').setOrigin(0);
