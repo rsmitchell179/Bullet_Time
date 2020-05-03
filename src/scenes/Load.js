@@ -32,6 +32,7 @@ class Load extends Phaser.Scene {
         this.load.audio('menu_select_sound', 'Menu_Select.wav');
         this.load.audio('powerup_sound', 'Powerup.wav');
         this.load.audio('background_music', 'backgroundMusic.wav');
+        this.load.audio('menu_music', 'menuMusic.wav');
         this.load.audio('deathsound', 'Die_Sound.mp3');
         // Load font 
         this.load.path = "./assets/font/";

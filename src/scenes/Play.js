@@ -13,8 +13,11 @@ class Play extends Phaser.Scene {
 
         //Variable Values for powerups
         this.doubleJump = false;
+        this.jumpTime;
         this.invincible = false;
+        this.invincibleTime = 10;
         this.timeSlow = false;
+        this.slowTime = 10;
         this.jumps = 0;
 
         // set background
@@ -142,15 +145,18 @@ class Play extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
-
+        // Timer and Powerup UI
         this.timeText = this.add.text(game.config.width - textSpace*2, 11, `Time: ${level}`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
         this.PowerUpText = this.add.text(5, 11, `Powerups:`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
         this.sunGlassesIcon = this.add.sprite(centerX - 238, 31, 'sunglassesIcon');
         this.sunGlassesIcon.tint = 0x000000;
+        this.glassesTime = this.add.text(centerX - 243, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 1}); 
         this.binaryNumbersIcon = this.add.sprite(centerX - 175, 32, 'binarynumbers');
         this.binaryNumbersIcon.tint = 0x000000;
+        this.binaryTime = this.add.text(centerX - 185, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
         this.stopWatchIcon = this.add.sprite(centerX - 120, 32, 'stopwatchIcon');
         this.stopWatchIcon.tint = 0x000000;
+        this.stopWatchTime = this.add.text(centerX - 133, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
     }
 
     // Creates bullets in the bullet group
@@ -199,6 +205,7 @@ class Play extends Phaser.Scene {
                 this.player.anims.play('Run', true);
             }
             
+            // Jump animation
             if(!this.player.body.touching.down && this.timeSlow) {
                 this.player.anims.play('SlowJump', true);
             } else if (!this.player.body.touching.down){
@@ -207,12 +214,11 @@ class Play extends Phaser.Scene {
 
             // Jump logic
             if(this.player.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up) ) {
-                
                 this.player.setVelocityY(-this.MAX_VELOCITY);
                 this.sound.play("jump_sound", { volume: 0.1 });
             } 
             
-            //double jump logic
+            // Double jump logic, allows for a second jump if boolean value is true
             if(this.doubleJump && this.jumps < 1 && Phaser.Input.Keyboard.JustDown(cursors.up) ) {
                 this.player.setVelocityY(-this.MAX_VELOCITY);
                 this.player.anims.play('SlowJump', true);
@@ -255,6 +261,7 @@ class Play extends Phaser.Scene {
                 this.sound.play("powerup_sound", { volume: 0.1 });
                 this.doubleJump = true;
                 this.jumpTime = 20;
+                this.glassesTime.setText(this.jumpTime);
                 this.sunGlasses = this.sunGlassesGroup.getFirst(true);
                 this.sunGlassesIcon.clearTint();
                 this.sunGlasses.destroy();
@@ -265,6 +272,7 @@ class Play extends Phaser.Scene {
                 this.sound.play("powerup_sound", { volume: 0.1 });
                 this.invincible = true;
                 this.invincibleTime = 10;
+                this.binaryTime.setText(this.invincibleTime);
                 this.binaryNumbersIcon.clearTint();
                 this.binaryNumbers = this.binaryNumbersGroup.getFirst(true);
                 this.binaryNumbers.destroy(); 
@@ -276,6 +284,7 @@ class Play extends Phaser.Scene {
                 this.sound.play("powerup_sound", { volume: 0.1 });
                 this.timeSlow = true;
                 this.slowTime = 10;
+                this.stopWatchTime.setText(this.slowTime);
                 this.stopWatchIcon.clearTint();
                 //console.log(this.timeSlow);
                 this.stopWatch = this.stopWatchGroup.getFirst(true);
@@ -324,14 +333,14 @@ class Play extends Phaser.Scene {
             this.addBullet();
         }
 
-        // Spawns Glasses after 10 seconds with a 1/3 chance to actually spawn
-        if(level % 10 == 0 && this.chanceToSpawnGlasses == 3) {
+        // Spawns Glasses after 12 seconds with a 1/3 chance to actually spawn
+        if(level % 12 == 0 && this.chanceToSpawnGlasses == 3) {
             //console.log(this.jumpTime);
             this.addSunGlasses();
         }
         
-        // Spawns Binary Numbers after 30 seconds with a 1/2 chance to actually spawn
-        if(level % 30 == 0 && this.chanceToSpawnBinaryNumbers == 2) {
+        // Spawns Binary Numbers after 29 seconds with a 1/2 chance to actually spawn
+        if(level % 29 == 0 && this.chanceToSpawnBinaryNumbers == 2) {
             //console.log(this.invincibleTime);
             this.addBinaryNumbers();
         }
@@ -345,6 +354,7 @@ class Play extends Phaser.Scene {
         // Decreases time with the double jump power
         if(this.doubleJump && this.jumpTime >= 0){
             this.jumpTime--;
+            this.glassesTime.setText(this.jumpTime);
         }
         
         // Resets to default when DoubleJump powerup stops 
@@ -352,12 +362,14 @@ class Play extends Phaser.Scene {
             this.doubleJump = false;
             this.sunGlassesIcon.tint = 0x000000;
             this.jumpTime = 20;
+            this.glassesTime.setText('');
         }
 
         // Decreases time with Invincibility power
         if(this.invincible && this.invincibleTime >= 0)
         {
             this.invincibleTime--;
+            this.binaryTime.setText(this.invincibleTime);
         }
         
         // Resets to default when Invincibility powerup stops
@@ -367,12 +379,14 @@ class Play extends Phaser.Scene {
             this.binaryNumbersIcon.tint = 0x000000;
             //console.log(this.invincible);
             this.invincibleTime = 10;
+            this.binaryTime.setText('');
         }
 
         // Decreases time with the SloMo
         if(this.timeSlow && this.slowTime >= 0)
         {
             this.slowTime--;
+            this.stopWatchTime.setText(this.slowTime);
         }
 
         // Resets to default when SloMo powerup stops
@@ -390,6 +404,7 @@ class Play extends Phaser.Scene {
                 this.physics.world.timeScale = 1; // physics
                 this.time.timeScale = 1; // time events 
             this.slowTime = 10;
+            this.stopWatchTime.setText('');
         }
 
     }
@@ -445,7 +460,7 @@ class Play extends Phaser.Scene {
 
     // On death
     GameOverMan() {
-            //fades out background music
+        //fades out background music
         this.tweens.add({
             targets: this.backgroundMusic,
             volume: 0,
@@ -457,8 +472,11 @@ class Play extends Phaser.Scene {
         this.sunGlassesGroup.clear();
         this.PowerUpText.destroy();
         this.binaryNumbersIcon.destroy();
+        this.glassesTime.destroy();
         this.stopWatchIcon.destroy();
+        this.stopWatchTime.destroy();
         this.sunGlassesIcon.destroy();
+        this.binaryTime.destroy();
         this.timeText.destroy();
 
         // Convert score to seconds and minutes 
