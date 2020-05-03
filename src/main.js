@@ -2,7 +2,7 @@
 // Binaisha Dastoor
 // Joshua Jung 
 // Ryan Mitchell
-// Game Title: Matrix Runner 
+// Game Title: Bullet Time 
 // Date Completed 5/3/20
 // Creative tilt justifications: We are proud of how we implemented the powerup logics. We used a combination of collisions, booleans
 //                               and variables to implement them. For example the invincibility detects if they have the the powerup
@@ -20,7 +20,7 @@ let config = {
     scale: {
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [Load, Menu, Play],
+    scene: [Load, Menu, Play, Credits],
     physics: {
         default: 'arcade',
         arcade: {
@@ -48,6 +48,7 @@ let textSpace = 64;
 let keyS;
 let keyF;
 let keyM;
+let keyC;
 let player = null;
 let level;
 let highScore;

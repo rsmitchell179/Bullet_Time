@@ -2,7 +2,7 @@ class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
     }
-
+    
     create() {
         // Variables and settings 
         this.MAX_VELOCITY = 700;
@@ -22,7 +22,14 @@ class Play extends Phaser.Scene {
         this.farbuildings = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'farbuildings').setOrigin(0);
         this.closebuildings = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'closebuildings').setOrigin(0);
         this.clouds = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'clouds').setOrigin(0);
- 
+        //create background music
+        this.backgroundMusic = this.sound.add('background_music',{
+            mute: false,
+            volume: 0.4,
+            rate: 1,
+            loop: true 
+        });
+        this.backgroundMusic.play();
         //create player
         this.player = this.physics.add.sprite(centerX/3, centerY - 80, 'player_atlas', 'Run1');
         this.player.body.setSize(44, 95);
@@ -95,11 +102,27 @@ class Play extends Phaser.Scene {
         this.anims.create({ 
             key: 'Jump', 
             frames: this.anims.generateFrameNames('player_atlas', {      
-                prefix: 'Run',
+                prefix: 'Jump',
                 start: 1,
+                end: 5,
                 suffix: '', 
+                
             }), 
-            frameRate: 0,
+            frameRate: 5,
+            repeat: 0,
+        });
+
+        // Jump animation with slowMo activated 
+        this.anims.create({ 
+            key: 'SlowJump', 
+            frames: this.anims.generateFrameNames('player_atlas', {      
+                prefix: 'Jump',
+                start: 1,
+                end: 5,
+                suffix: '', 
+                
+            }), 
+            frameRate: 1,
             repeat: 0,
         });
 
@@ -119,18 +142,15 @@ class Play extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
-        
-        // Not working ATM
-        if(!this.player.destroyed) {
-            let timeText = this.add.text(game.config.width - textSpace*1.9, 11, `Time: ${level}`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
-            let PowerUpText = this.add.text(5, 11, `Powerups:`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
-            this.sunGlassesIcon = this.add.sprite(centerX - 238, 31, 'sunglassesIcon');
-            this.sunGlassesIcon.tint = 0x000000;
-            this.binaryNumbersIcon = this.add.sprite(centerX - 175, 32, 'binarynumbers');
-            this.binaryNumbersIcon.tint = 0x000000;
-            this.stopWatchIcon = this.add.sprite(centerX - 120, 32, 'stopwatchIcon');
-            this.stopWatchIcon.tint = 0x000000;
-        }
+
+        this.timeText = this.add.text(game.config.width - textSpace*2, 11, `Time: ${level}`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
+        this.PowerUpText = this.add.text(5, 11, `Powerups:`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
+        this.sunGlassesIcon = this.add.sprite(centerX - 238, 31, 'sunglassesIcon');
+        this.sunGlassesIcon.tint = 0x000000;
+        this.binaryNumbersIcon = this.add.sprite(centerX - 175, 32, 'binarynumbers');
+        this.binaryNumbersIcon.tint = 0x000000;
+        this.stopWatchIcon = this.add.sprite(centerX - 120, 32, 'stopwatchIcon');
+        this.stopWatchIcon.tint = 0x000000;
     }
 
     // Creates bullets in the bullet group
@@ -169,9 +189,9 @@ class Play extends Phaser.Scene {
         this.farbuildings.tilePositionX += .4;
         this.closebuildings.tilePositionX += .7;
         this.clouds.tilePositionX += .4;
-
         // Check if player does not exist
         if(!this.player.destroyed) {
+
             // Check if player is on building play run/slowMo run animation
             if(this.player.body.touching.down && this.timeSlow) {
                 this.player.anims.play('SlowRun', true);
@@ -179,22 +199,27 @@ class Play extends Phaser.Scene {
                 this.player.anims.play('Run', true);
             }
             
+            if(!this.player.body.touching.down && this.timeSlow) {
+                this.player.anims.play('SlowJump', true);
+            } else if (!this.player.body.touching.down){
+                this.player.anims.play('Jump', true);
+            }
+
             // Jump logic
-            if(this.player.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+            if(this.player.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up) ) {
                 
-                this.player.anims.play('Jump');
                 this.player.setVelocityY(-this.MAX_VELOCITY);
                 this.sound.play("jump_sound", { volume: 0.1 });
             } 
-
+            
             //double jump logic
-            if(this.doubleJump && this.jumps < 1 && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+            if(this.doubleJump && this.jumps < 1 && Phaser.Input.Keyboard.JustDown(cursors.up) ) {
                 this.player.setVelocityY(-this.MAX_VELOCITY);
-                this.player.anims.play('Jump');
+                this.player.anims.play('SlowJump', true);
                 this.sound.play("jump_sound", { volume: 0.1 });
                 this.jumps++;
                 //console.log(this.jumps);
-            }
+            } 
             
             // Reset Jumps
             if(this.jumps == 1 && this.player.body.touching.down) {
@@ -265,6 +290,7 @@ class Play extends Phaser.Scene {
                 this.sunGlassesGroup.timeScale = 2;
                 this.binaryNumbersGroup.timeScale = 2;
                 this.stopWatchGroup.timeScale = 2;
+                this.backgroundMusic.setRate(0.5);
                 this.physics.world.timeScale = 2; // physics
                 this.time.timeScale = 0.5; // time events (they said to make it 2 to slow down but that was a lie)
             }
@@ -281,7 +307,7 @@ class Play extends Phaser.Scene {
     levelBump() {
         // increment level (aka score)
         level++;
-
+        this.timeText.setText('Time: ' + level);
         if(level % 5 == 0) {
             // RANDOM numbers
             this.chanceToSpawnGlasses = Phaser.Math.Between(1, 3);
@@ -300,7 +326,7 @@ class Play extends Phaser.Scene {
 
         // Spawns Glasses after 10 seconds with a 1/3 chance to actually spawn
         if(level % 10 == 0 && this.chanceToSpawnGlasses == 3) {
-            console.log(this.jumpTime);
+            //console.log(this.jumpTime);
             this.addSunGlasses();
         }
         
@@ -360,6 +386,7 @@ class Play extends Phaser.Scene {
                 this.sunGlassesGroup.timeScale = 1;
                 this.binaryNumbersGroup.timeScale = 1;
                 this.stopWatchGroup.timeScale = 1;
+                this.backgroundMusic.setRate(1);
                 this.physics.world.timeScale = 1; // physics
                 this.time.timeScale = 1; // time events 
             this.slowTime = 10;
@@ -369,8 +396,10 @@ class Play extends Phaser.Scene {
 
     // Collided with building and kills player
     buildingCollision(){
+        this.sound.play("deathsound", { volume: 1});
         this.player.destroyed = true; 
         this.difficultyTimer.destroy();
+        
         //console.log("You Fell");
         // Death Particles and emiter
         this.particles = this.add.particles('The green box');
@@ -390,10 +419,11 @@ class Play extends Phaser.Scene {
     }
     // Collided with bullet and kills player
     bulletCollision() {
+        this.sound.play("deathsound", { volume: 1});
         this.player.destroyed = true; 
         this.difficultyTimer.destroy();
         //console.log("You got Shot");
-        
+
         // Death Particles and emiter
         this.particles = this.add.particles('The green box');
         this.emitter = this.particles.createEmitter({
@@ -415,9 +445,21 @@ class Play extends Phaser.Scene {
 
     // On death
     GameOverMan() {
+            //fades out background music
+        this.tweens.add({
+            targets: this.backgroundMusic,
+            volume: 0,
+            ease: 'Linear',
+            duration: 2000,
+        });
         this.bulletGroup.clear();
         this.buildingGroup.clear();
         this.sunGlassesGroup.clear();
+        this.PowerUpText.destroy();
+        this.binaryNumbersIcon.destroy();
+        this.stopWatchIcon.destroy();
+        this.sunGlassesIcon.destroy();
+        this.timeText.destroy();
 
         // Convert score to seconds and minutes 
         let minutes = Math.floor(level/60);
@@ -449,17 +491,21 @@ class Play extends Phaser.Scene {
 
         // Prints out New Hi-Score!! when you acheive a new high score
         if(newHighScore) {
-            this.add.text(centerX, centerY, `New Hi-Score!!` , { fontFamily: 'Helvetica', fontSize: '50px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5 }).setOrigin(0.5);
+            this.add.text(centerX, centerY + 10, `New Hi-Score!!` , { fontFamily: 'Helvetica', fontSize: '50px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5 }).setOrigin(0.5);
         }
 
         // Converts highScore to minutes and seconds
         let highMinutes = Math.floor(highScore/60);
         let highSeconds = Math.floor(highScore%60);
-
+        
         // Displays current score and the browsers high score as well as menu options to quit or restart
-        this.add.text(centerX, centerY - 200, `Whoa man you ran for: ${minutes}m and ${seconds}s` , { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5 }).setOrigin(0.5);
-        this.add.text(centerX, centerY - 160, `Hi-Score: ${highMinutes}m and ${highSeconds}s`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
-        this.add.text(centerX, centerY - 120, `Press F to pay respects and restart`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
-        this.add.text(centerX, centerY - 80, `Press M to go back to main menu`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
+        this.add.text(centerX, centerY - 160, `Whoa man you ran for: ${minutes}m and ${seconds}s` , { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5 }).setOrigin(0.5);
+        this.add.text(centerX, centerY - 120, `Hi-Score: ${highMinutes}m and ${highSeconds}s`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
+        this.clock = this.time.delayedCall(2000, () => { 
+            this.add.text(centerX, centerY - 80, `Press F to pay respects and restart`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
+            this.add.text(centerX, centerY - 40, `Press M to go back to main menu`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
+        }, null, this);
+        
+        
     }
 }

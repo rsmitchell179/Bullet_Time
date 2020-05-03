@@ -23,12 +23,16 @@ class Load extends Phaser.Scene {
         this.load.image('stopwatch', 'stopWatch.png');
         this.load.image('sunglassesIcon', 'sunglassesicon.png');
         this.load.image('stopwatchIcon', 'stopWatchIcon.png');
+        //<div>Icons made by <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        this.load.image('up_Key', 'arrow-up.png');
         // Load Audio
         this.load.path = "./assets/audio/";
         this.load.audio('bullet_sound', 'Bullet_Shot.wav');
         this.load.audio('jump_sound', 'Jump.wav');
         this.load.audio('menu_select_sound', 'Menu_Select.wav');
         this.load.audio('powerup_sound', 'Powerup.wav');
+        this.load.audio('background_music', '_littlerobotsoundfactory_loop-run-for-your-life.wav');
+        this.load.audio('deathsound', 'Die_Sound.mp3');
         // Load font 
         this.load.path = "./assets/font/";
         this.load.bitmapFont('myFont', 'font.png', 'font.fnt');

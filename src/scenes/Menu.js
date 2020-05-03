@@ -8,7 +8,7 @@ class Menu extends Phaser.Scene {
         this.menuBackground = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'menuBackground').setOrigin(0,0);
         // Add Matrix Runner Title to top of menu 
         // Font Credit: http://bit.ly/WatchDogsFont by David Libeau
-        this.add.bitmapText(centerX - 287, centerY - 255, 'myFont', 'Matrix Runner', 100, 2);
+        this.add.bitmapText(centerX - 215, centerY - 255, 'myFont', 'Bullet Time', 100, 2);
         let underline = this.add.rectangle(centerX, centerY - 167, 580, 5, 0xFFFFFF);
         underline.setStrokeStyle(2.5, 0x000000, 1);
 
@@ -21,7 +21,12 @@ class Menu extends Phaser.Scene {
         let underline2 = this.add.rectangle(centerX, centerY -35, 580, 5, 0xFFFFFF);
         underline2.setStrokeStyle(2.5, 0x000000, 1);
 
-        this.add.bitmapText(centerX - 300, centerY -20, 'myFont', 'UP - To Jump', 42);
+
+        let whiteBox = this.add.rectangle(centerX - 265, centerY, 34, 34, 0xFFFFFF);
+        whiteBox.setStrokeStyle(2.5, 0x000000, 1);
+
+        let arrowSprite = this.add.sprite(centerX - 265, centerY, 'up_Key');
+        this.add.bitmapText(centerX - 245, centerY -20, 'myFont', '- To Jump', 42);
 
         this.add.bitmapText(centerX + 100, centerY -20, 'myFont', '- Kill you', 42);
         this.add.sprite(centerX + 70, centerY + 3, 'bulletIcon');
@@ -41,6 +46,7 @@ class Menu extends Phaser.Scene {
         this.stopWatchIcon = this.add.sprite(centerX - 230, centerY + 210, 'stopwatchIcon');
         
         keyS =  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        keyC =  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
     }
 
     update() {
@@ -49,6 +55,10 @@ class Menu extends Phaser.Scene {
         if(Phaser.Input.Keyboard.JustDown(keyS)) {
             this.sound.play('menu_select_sound');
             this.scene.start('playScene');
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyC)) {
+            this.sound.play('menu_select_sound');
+            this.scene.start('creditsScene')
         }
     }
 
