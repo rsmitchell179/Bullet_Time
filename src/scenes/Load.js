@@ -39,6 +39,7 @@ class Load extends Phaser.Scene {
     }
 
     create() {
+        this.add.bitmapText(centerX - 170, centerY - 80, 'myFont', 'Loading', 100);
         // check for local storage browser support
         if(window.localStorage) {
             console.log('Local storage supported');
