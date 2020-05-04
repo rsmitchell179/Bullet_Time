@@ -1,6 +1,6 @@
 class Bullet extends Phaser.Physics.Arcade.Sprite{
     constructor(scene, velocity){
-        super(scene, game.config.width + 50, Phaser.Math.Between(190, 270), 'bullet');
+        super(scene, game.config.width + 60, Phaser.Math.Between(190, 260), 'bullet');
         scene.add.existing(this);
         scene.physics.add.existing(this);       // add physics body
         this.setVelocityX(velocity);            // make it go!
@@ -16,14 +16,14 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
     update(){
         super.update();
 
-        if(this.newBullet && this.x < -50) {
+        if(this.newBullet && this.x < -100) {
             this.newBullet = false;
             // call parent scene method from this context
             this.scene.addBullet(this.parent, this.velocity);
         }
 
         // destroy bullet if it reaches the left edge of the screen
-        if(this.x < -51) {
+        if(this.x < -101) {
             this.destroy();
         }
     }

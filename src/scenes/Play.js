@@ -146,7 +146,7 @@ class Play extends Phaser.Scene {
             loop: true
         });
         // Timer and Powerup UI
-        this.timeText = this.add.text(game.config.width - textSpace*2, 11, `Time: ${level}`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 3});
+        this.timeText = this.add.text(game.config.width - 134, 11, `Time: ${level}`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 3});
         this.PowerUpText = this.add.text(5, 11, `Powerups:`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 3});
         this.sunGlassesIcon = this.add.sprite(centerX - 238, 31, 'sunglassesIcon');
         this.sunGlassesIcon.tint = 0x000000;
