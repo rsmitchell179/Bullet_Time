@@ -508,7 +508,7 @@ class Play extends Phaser.Scene {
             targets: this.backgroundMusic,
             volume: 0,
             ease: 'Linear',
-            duration: 1000,
+            duration: 800,
         });
         this.bulletGroup.clear();
         this.buildingGroup.clear();
@@ -562,7 +562,7 @@ class Play extends Phaser.Scene {
         // Displays current score and the browsers high score as well as menu options to quit or restart
         this.add.text(centerX, centerY - 160, `Whoa man you ran for: ${minutes}m and ${seconds}s` , { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 3 }).setOrigin(0.5);
         this.add.text(centerX, centerY - 120, `Hi-Score: ${highMinutes}m and ${highSeconds}s`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 3}).setOrigin(0.5);
-        this.clock = this.time.delayedCall(2000, () => { 
+        this.clock = this.time.delayedCall(1000, () => { 
             this.add.text(centerX, centerY - 80, `Press F to pay respects and restart`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 3}).setOrigin(0.5);
             this.add.text(centerX, centerY - 40, `Press M to go back to main menu`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 3}).setOrigin(0.5);
         }, null, this);
