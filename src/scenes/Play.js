@@ -388,8 +388,8 @@ class Play extends Phaser.Scene {
             this.addBinaryNumbers();
         }
         
-        // Spawns Stopwatch after 35 seconds with a 1/3 chance to actually spawn
-        if(level % 35 == 0 && this.chanceToSpawnStopWatch == 3){
+        // Spawns Stopwatch after 31 seconds with a 1/3 chance to actually spawn
+        if(level % 31 == 0 && this.chanceToSpawnStopWatch == 3){
             this.addStopWatch();
         }
 
@@ -508,7 +508,7 @@ class Play extends Phaser.Scene {
             targets: this.backgroundMusic,
             volume: 0,
             ease: 'Linear',
-            duration: 2000,
+            duration: 1000,
         });
         this.bulletGroup.clear();
         this.buildingGroup.clear();

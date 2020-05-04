@@ -1,6 +1,6 @@
 class StopWatch extends Phaser.Physics.Arcade.Sprite{
     constructor(scene, velocity){
-        super(scene, game.config.width, Phaser.Math.Between(190, 250), 'stopwatch').setOrigin(0,0);
+        super(scene, game.config.width + 100, Phaser.Math.Between(190, 250), 'stopwatch').setOrigin(0,0);
         scene.add.existing(this);
         scene.physics.add.existing(this);       // add physics body
         this.setVelocityX(velocity);            // make it go!
