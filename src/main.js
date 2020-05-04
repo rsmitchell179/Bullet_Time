@@ -49,6 +49,7 @@ let keyS;
 let keyF;
 let keyM;
 let keyC;
+let keyUP;
 let player = null;
 let level;
 let highScore;

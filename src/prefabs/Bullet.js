@@ -16,14 +16,14 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
     update(){
         super.update();
 
-        if(this.newBullet && this.x < 0) {
+        if(this.newBullet && this.x < -50) {
             this.newBullet = false;
             // call parent scene method from this context
             this.scene.addBullet(this.parent, this.velocity);
         }
 
         // destroy bullet if it reaches the left edge of the screen
-        if(this.x < -this.width) {
+        if(this.x < -51) {
             this.destroy();
         }
     }

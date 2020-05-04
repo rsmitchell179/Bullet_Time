@@ -5,15 +5,15 @@ class Play extends Phaser.Scene {
     
     create() {
         // Variables and settings 
-        this.MAX_VELOCITY = 700;
+        this.MAX_VELOCITY = 760;
         this.physics.world.gravity.y = 2000;
-        this.bulletSpeed = -550;
+        this.bulletSpeed = -570;
         this.buildingSpeed = -455;
         level = 0;
-
+        this.jumperTime = 0;
         //Variable Values for powerups
         this.doubleJump = false;
-        this.jumpTime;
+        this.jumpTime = 10;
         this.invincible = false;
         this.invincibleTime = 10;
         this.timeSlow = false;
@@ -37,13 +37,12 @@ class Play extends Phaser.Scene {
         this.player = this.physics.add.sprite(centerX/3, centerY - 80, 'player_atlas', 'Run1');
         this.player.body.setSize(44, 95);
         this.player.body.setFriction(0);
-        this.player.setCollideWorldBounds(true);
+        //this.player.setCollideWorldBounds(true);
         this.player.body.setAllowGravity(true);
         this.player.destroyed = false;
 
         //initial platform spawn
-        this.building = this.physics.add.sprite(centerX/5.5, game.config.height - 80, 'building2');
-        this.building.scaleX = 2;
+        this.building = this.physics.add.sprite(centerX, game.config.height - 80, 'building');
         this.building.body.immovable = true;
         this.building.body.setFriction(0);
         this.building.body.setAllowGravity(false);
@@ -97,7 +96,7 @@ class Play extends Phaser.Scene {
                 end: 10,
                 suffix: '', 
             }), 
-            frameRate: 6,
+            frameRate: 4,
             repeat: -1 
         });
 
@@ -125,7 +124,7 @@ class Play extends Phaser.Scene {
                 suffix: '', 
                 
             }), 
-            frameRate: 1,
+            frameRate: 2,
             repeat: 0,
         });
 
@@ -133,6 +132,7 @@ class Play extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyM = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+        keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
 
         // add physics collider
         this.physics.add.collider(this.player, this.building);
@@ -146,17 +146,17 @@ class Play extends Phaser.Scene {
             loop: true
         });
         // Timer and Powerup UI
-        this.timeText = this.add.text(game.config.width - textSpace*2, 11, `Time: ${level}`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
-        this.PowerUpText = this.add.text(5, 11, `Powerups:`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
+        this.timeText = this.add.text(game.config.width - textSpace*2, 11, `Time: ${level}`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 3});
+        this.PowerUpText = this.add.text(5, 11, `Powerups:`, { fontFamily: 'Helvetica', fontSize: '30px', color: '#008F11' , stroke: '#000000', strokeThickness: 3});
         this.sunGlassesIcon = this.add.sprite(centerX - 238, 31, 'sunglassesIcon');
         this.sunGlassesIcon.tint = 0x000000;
-        this.glassesTime = this.add.text(centerX - 243, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 1}); 
+        this.glassesTime = this.add.text(centerX - 243, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 3}); 
         this.binaryNumbersIcon = this.add.sprite(centerX - 175, 32, 'binarynumbers');
         this.binaryNumbersIcon.tint = 0x000000;
-        this.binaryTime = this.add.text(centerX - 185, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
+        this.binaryTime = this.add.text(centerX - 185, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 3});
         this.stopWatchIcon = this.add.sprite(centerX - 120, 32, 'stopwatchIcon');
         this.stopWatchIcon.tint = 0x000000;
-        this.stopWatchTime = this.add.text(centerX - 133, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 1});
+        this.stopWatchTime = this.add.text(centerX - 133, 55, '', { fontFamily: 'Helvetica', fontSize: '20px', color: '#008F11' , stroke: '#000000', strokeThickness: 3});
     }
 
     // Creates bullets in the bullet group
@@ -197,7 +197,7 @@ class Play extends Phaser.Scene {
         this.clouds.tilePositionX += .4;
         // Check if player does not exist
         if(!this.player.destroyed) {
-
+            
             // Check if player is on building play run/slowMo run animation
             if(this.player.body.touching.down && this.timeSlow) {
                 this.player.anims.play('SlowRun', true);
@@ -213,10 +213,34 @@ class Play extends Phaser.Scene {
             }
 
             // Jump logic
-            if(this.player.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up) ) {
-                this.player.setVelocityY(-this.MAX_VELOCITY);
-                this.sound.play("jump_sound", { volume: 0.1 });
-            } 
+            // Variable Jump
+            if(keyUP.isDown && !this.timeSlow){
+                if(this.player.body.touching.down && this.jumperTime == 0) {
+                    this.jumperTime = 1;
+                    this.player.body.velocity.y = -400 + (this.jumperTime * 5);
+                    this.sound.play("jump_sound", { volume: 0.1 });
+                } else if (this.jumperTime > 0 && this.jumperTime < 31) {
+                    this.jumperTime++;
+                    this.player.body.velocity.y = -400 + (this.jumperTime * 5);
+                }
+            } else if (!keyUP.isDown) {
+                this.jumperTime = 0;
+            }
+            
+            if(keyUP.isDown && this.timeSlow){
+                if(this.player.body.touching.down && this.jumperTime == 0) {
+                    this.jumperTime = 1;
+                    this.player.body.velocity.y = -550 + (this.jumperTime * 5);
+                    this.sound.play("jump_sound", { volume: 0.1 });
+                } else if (this.jumperTime > 0 && this.jumperTime < 31) {
+                    this.jumperTime++;
+                    console.log(this.jumperTime);
+                    this.player.body.velocity.y = -550 + (this.jumperTime * 5);
+                }
+            } else if (!keyUP.isDown) {
+                this.jumperTime = 0;
+                
+            }
             
             // Double jump logic, allows for a second jump if boolean value is true
             if(this.doubleJump && this.jumps < 1 && Phaser.Input.Keyboard.JustDown(cursors.up) ) {
@@ -226,7 +250,22 @@ class Play extends Phaser.Scene {
                 this.jumps++;
                 //console.log(this.jumps);
             } 
-            
+            // Failed variable doublejump logic
+            // if(keyUP.isDown && this.doubleJump) { 
+            //     console.log(this.jumperTime);
+            //     if(this.jumps < 1 && this.jumperTime == 0) {
+            //         this.jumperTime = 1;
+            //         this.player.body.velocity.y = -400 + (this.jumperTime * 5);
+            //         this.sound.play("jump_sound", { volume: 0.1 });
+            //     } else if (this.jumperTime > 0 && this.jumperTime < 31) {
+            //         this.jumperTime++;
+            //         this.jumps++;
+            //         this.player.body.velocity.y = -400 + (this.jumperTime * 5);
+            //     }
+            // } else if (!keyUP.isDown && this.doubleJump) {
+            //     this.jumperTime = 0;    
+            // }
+
             // Reset Jumps
             if(this.jumps == 1 && this.player.body.touching.down) {
                 this.jumps = 0;
@@ -239,6 +278,10 @@ class Play extends Phaser.Scene {
                 if(this.physics.collide(this.player, this.buildingGroup)) {
                     this.buildingCollision();
                 }
+            }
+
+            if(this.player.x == game.config.height) {   
+                this.buildingCollision();
             }
             // Thanks to Grenager on https://www.html5gamedevs.com/topic/41338-prevent-pushing-other-object/ for the collision sollution 
             // because we were using collide instead and it messed it up *hairpull*
@@ -328,13 +371,13 @@ class Play extends Phaser.Scene {
         }
         
         // -------TIME RELATED SPAWNING---------------
-        //Spawns bullets after 15 seconds
-        if(level == 15) {
+        //Spawns bullets after 9 seconds
+        if(level == 9) {
             this.addBullet();
         }
 
         // Spawns Glasses after 12 seconds with a 1/3 chance to actually spawn
-        if(level % 12 == 0 && this.chanceToSpawnGlasses == 3) {
+        if(level % 12 == 0 && this.chanceToSpawnGlasses) {
             //console.log(this.jumpTime);
             this.addSunGlasses();
         }
@@ -345,8 +388,8 @@ class Play extends Phaser.Scene {
             this.addBinaryNumbers();
         }
         
-        // Spawns Stopwatch after 15 seconds with a 1/3 chance to actually spawn
-        if(level % 15 == 0 && this.chanceToSpawnStopWatch == 3){
+        // Spawns Stopwatch after 35 seconds with a 1/3 chance to actually spawn
+        if(level % 35 == 0 && this.chanceToSpawnStopWatch == 3){
             this.addStopWatch();
         }
 
@@ -509,7 +552,7 @@ class Play extends Phaser.Scene {
 
         // Prints out New Hi-Score!! when you acheive a new high score
         if(newHighScore) {
-            this.add.text(centerX, centerY + 10, `New Hi-Score!!` , { fontFamily: 'Helvetica', fontSize: '50px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5 }).setOrigin(0.5);
+            this.add.text(centerX, centerY + 10, `New Hi-Score!!` , { fontFamily: 'Helvetica', fontSize: '50px', color: '#008F11' , stroke: '#000000', strokeThickness: 3 }).setOrigin(0.5);
         }
 
         // Converts highScore to minutes and seconds
@@ -517,11 +560,11 @@ class Play extends Phaser.Scene {
         let highSeconds = Math.floor(highScore%60);
         
         // Displays current score and the browsers high score as well as menu options to quit or restart
-        this.add.text(centerX, centerY - 160, `Whoa man you ran for: ${minutes}m and ${seconds}s` , { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5 }).setOrigin(0.5);
-        this.add.text(centerX, centerY - 120, `Hi-Score: ${highMinutes}m and ${highSeconds}s`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
+        this.add.text(centerX, centerY - 160, `Whoa man you ran for: ${minutes}m and ${seconds}s` , { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 3 }).setOrigin(0.5);
+        this.add.text(centerX, centerY - 120, `Hi-Score: ${highMinutes}m and ${highSeconds}s`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 3}).setOrigin(0.5);
         this.clock = this.time.delayedCall(2000, () => { 
-            this.add.text(centerX, centerY - 80, `Press F to pay respects and restart`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
-            this.add.text(centerX, centerY - 40, `Press M to go back to main menu`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 1.5}).setOrigin(0.5);
+            this.add.text(centerX, centerY - 80, `Press F to pay respects and restart`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 3}).setOrigin(0.5);
+            this.add.text(centerX, centerY - 40, `Press M to go back to main menu`, { fontFamily: 'Helvetica', fontSize: '34px', color: '#008F11' , stroke: '#000000', strokeThickness: 3}).setOrigin(0.5);
         }, null, this);
         
         

@@ -1,6 +1,6 @@
 class Building extends Phaser.Physics.Arcade.Sprite{
     constructor(scene, velocity){
-        super(scene, game.config.width + 500, Phaser.Math.Between(420, 500), 'building2');
+        super(scene, game.config.width +  Phaser.Math.Between(850, 900), Phaser.Math.Between(430, 500), 'building');
         scene.add.existing(this);
         scene.physics.add.existing(this);       // add physics body
         this.setVelocityX(velocity);            // make it go!
